@@ -6,15 +6,15 @@ let maze = [
     [' ', ' ', ' ', ' ', ' ', ' ', 'e']
 ];
 let mySmallMaze = [
-    [' ', '*', ' '],
+    [' ', ' ', ' '],
     [' ', '*', ' '],
     [' ', ' ', 'e']
 ];
 const findPath = (x, y, maze) => {
-    const xSize = maze[0].length;
-    const ySize = maze.length;
+    const xSize = maze.length;
+    const ySize = maze[0].length;
     //check if it is within the range of array size
-    if ((x >= 3 || x < 0) || (y >= 3 || y < 0))
+    if ((x > xSize || x < 0) || (y > ySize || y < 0))
         return false
     else if (maze[x][y] === "e")
         return true
@@ -43,18 +43,18 @@ const checkNext = (maze, x, y) => {
         return 'L'
 }
 const outOfMaze = (maze, currentX = 0, currentY = 0, path = []) => {
-    if (path[path.length - 1] === 'E')
+    const direction = checkNext(maze, currentX, currentY)
+    if (direction === 'E')
         return path.join("")
-    path.push(checkNext(maze, currentX, currentY))
-    if (path[path.length - 1] === 'R')
+    else if (direction === 'R')
         currentY += 1;
-    else if (path[path.length - 1] === 'D')
+    else if (direction === 'D')
         currentX += 1;
-    else if (path[path.length - 1] === 'U')
+    else if (direction === 'U')
         currentX -= 1;
-    else if (path[path.length - 1] === 'L')
+    else if (direction === 'L')
         currentY -= 1;
+    path.push(direction)
     return outOfMaze(maze, currentX, currentY, path)
 }
-outOfMaze(maze)
-
+outOfMaze(mySmallMaze)
