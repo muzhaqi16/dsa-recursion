@@ -14,7 +14,7 @@ const findPath = (x, y, maze) => {
     const xSize = maze.length;
     const ySize = maze[0].length;
     //check if it is within the range of array size
-    if ((x > xSize || x < 0) || (y > ySize || y < 0))
+    if ((x >= xSize || x < 0) || (y >= ySize || y < 0))
         return false
     else if (maze[x][y] === "e")
         return true
@@ -37,10 +37,10 @@ const checkNext = (maze, x, y) => {
         return 'D'
     //check if it can go up
     else if (findPath(x, y - 1, maze))
-        return 'U'
+        return 'L'
     //check if it can go left
     else if (findPath(x - 1, y, maze))
-        return 'L'
+        return 'U'
     return false;
 }
 const outOfMaze = (maze, currentX = 0, currentY = 0, path = []) => {
@@ -54,10 +54,14 @@ const outOfMaze = (maze, currentX = 0, currentY = 0, path = []) => {
         currentY += 1;
     else if (direction === 'D')
         currentX += 1;
-    else if (direction === 'U')
+    else if (direction === 'U') {
+        maze[currentX][currentY] = "*"
         currentX -= 1;
-    else if (direction === 'L')
+    }
+    else if (direction === 'L') {
+        maze[currentX][currentY] = "*"
         currentY -= 1;
+    }
     path.push(direction)
     return outOfMaze(maze, currentX, currentY, path)
 }
