@@ -1,9 +1,18 @@
-let mySmallMaze = [
-    [' ', ' ', ' ', ' '],
-    [' ', '*', ' ', '*'],
-    [' ', '*', ' ', ' '],
-    [' ', '*', '*', '*'],
-    [' ', ' ', ' ', 'e']
+let maze1 = [
+    [' ', '*', ' ', ' ', ' '],
+    [' ', ' ', ' ', '*', ' '],
+    ['*', '*', '*', '*', ' '],
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', '*', '*', '*', '*'],
+    [' ', ' ', ' ', ' ', 'e']
+];
+let maze2 = [
+    [' ', '*', ' ', ' ', ' '],
+    [' ', ' ', ' ', '*', ' '],
+    [' ', '*', '*', '*', ' '],
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', '*', '*', '*', '*'],
+    [' ', ' ', ' ', ' ', 'e']
 ];
 const findPath = (x, y, maze) => {
     const xSize = maze.length;
@@ -18,8 +27,11 @@ const findPath = (x, y, maze) => {
         return true
 }
 const checkNext = (maze, x, y, dir = []) => {
-    if (maze[x][y] === 'e')
+    if (maze[x][y] === 'e') {
+        dir.push('E');
         return
+    }
+    maze[x][y] = '*'
     if (findPath(x, y + 1, maze)) {
         dir.push('R');
         checkNext(maze, x, y + 1, dir);
@@ -30,23 +42,24 @@ const checkNext = (maze, x, y, dir = []) => {
     }
     else if (findPath(x, y - 1, maze)) {
         dir.push('L')
-        maze[x][y] = '*'
         checkNext(maze, x, y - 1, dir)
     }
     else if (findPath(x - 1, y, maze)) {
         dir.push('U')
-        maze[x][y] = '*'
+
         checkNext(maze, x - 1, y, dir)
     }
+
     return dir
 }
 checkDirections = (maze, x = 0, y = 0) => {
-    if (maze[x][y] === 'e')
-        return true
-    return checkNext(maze, x, y)
+    const dir = checkNext(maze, x, y);
+    if (dir.pop() === 'E')
+        return dir
+    return 'There is no way out'
 
 }
 outOfMaze = (maze) => {
     console.log(checkDirections(maze))
 }
-outOfMaze(mySmallMaze)
+outOfMaze(maze2)

@@ -6,55 +6,63 @@ let maze = [
     [' ', ' ', ' ', ' ', ' ', ' ', 'e']
 ];
 let mySmallMaze = [
-    [' ', ' ', '*'],
+    [' ', ' ', ' '],
+    [' ', '*', ' '],
+    [' ', ' ', 'e']
+];
+let myMaze = [
+    [' ', ' ', ' '],
+    [' ', '*', ' '],
     [' ', '*', ' '],
     [' ', ' ', 'e']
 ];
 const findPath = (x, y, maze) => {
     const xSize = maze.length;
     const ySize = maze[0].length;
-    //check if it is within the range of array size
-    if ((x > xSize || x < 0) || (y > ySize || y < 0))
+    if ((x >= xSize || x < 0) || (y >= ySize || y < 0))
         return false
     else if (maze[x][y] === "e")
         return true
-    //check if it is blocked
     else if (maze[x][y] === "*")
         return false
-    //check if it is open
     else if (maze[x][y] === " ")
         return true
 }
-const checkNext = (maze, x, y) => {
-    //check if it is the exit
-    if (maze[x][y] === "e")
-        return 'E'
-    //check if it can go right
-    else if (findPath(x, y + 1, maze))
-        return 'R'
-    //check if it can go down
-    else if (findPath(x + 1, y, maze))
-        return 'D'
-    //check if it can go up
-    else if (findPath(x, y - 1, maze))
-        return 'U'
-    //check if it can go left
-    else if (findPath(x - 1, y, maze))
-        return 'L'
+const checkNext = (maze, x, y, dir = []) => {
+    if (maze[x][y] === 'e') {
+        dir.push('E');
+        return
+    }
+    maze[x][y] = '*'
+    if (findPath(x, y + 1, maze)) {
+        dir.push('R');
+        checkNext(maze, x, y + 1, dir);
+    }
+    else if (findPath(x + 1, y, maze)) {
+        dir.push('D')
+        checkNext(maze, x + 1, y, dir)
+    }
+    else if (findPath(x, y - 1, maze)) {
+        dir.push('L')
+        checkNext(maze, x, y - 1, dir)
+    }
+    else if (findPath(x - 1, y, maze)) {
+        dir.push('U')
+        checkNext(maze, x - 1, y, dir)
+    }
+    return dir
 }
-const outOfMaze = (maze, currentX = 0, currentY = 0, path = []) => {
-    const direction = checkNext(maze, currentX, currentY)
-    if (direction === 'E')
-        return path.join("")
-    else if (direction === 'R')
-        currentY += 1;
-    else if (direction === 'D')
-        currentX += 1;
-    else if (direction === 'U')
-        currentX -= 1;
-    else if (direction === 'L')
-        currentY -= 1;
-    path.push(direction)
-    return outOfMaze(maze, currentX, currentY, path)
+checkDirections = (maze, x = 0, y = 0) => {
+    let dir = [];
+    let path = checkNext(maze, x, y)
+    while (path.pop() === 'E') {
+        dir.push(path)
+        path = checkNext(maze, x, y)
+    }
+    return dir
+
 }
-outOfMaze(mySmallMaze)
+outOfMaze = (maze) => {
+    console.log(checkDirections(maze))
+}
+outOfMaze(myMaze)
